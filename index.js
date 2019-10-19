@@ -66,8 +66,10 @@ app.get('/reqPoints', async (req, res) => {
 		dataPoints = await performance
 			.find(
 				{
-					Strategy_ID: parseInt(strategy),
-					Outcome_Indicator_ID: parseInt(indicator)
+					$and: [
+						{ Strategy_ID: parseInt(strategy) },
+						{ Outcome_Indicator_ID: parseInt(indicator) }
+					]
 				},
 				{
 					_id: 0,
@@ -80,13 +82,12 @@ app.get('/reqPoints', async (req, res) => {
 				}
 			)
 			.exec()
-		// sremove certain keys for external viewers
-		if (loggedIn === 'true') {
+		// remove certain keys for external viewers : fix
+		if (loggedIn !== 'true') {
 			dataPoints = dataPoints.map(dataPoint => {
-				let obj = { ...dataPoint }
-
-				delete obj['Program_Name']
-				delete obj['Agency_Name']
+				let obj = { ...dataPoint['_doc'] }
+				delete obj.Program_Name
+				delete obj.Agency_Name
 
 				return obj
 			})
