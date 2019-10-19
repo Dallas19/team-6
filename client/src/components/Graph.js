@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
 	XYPlot,
 	VerticalGridLines,
@@ -7,30 +7,46 @@ import {
 	YAxis,
 	MarkSeries
 } from 'react-vis'
-
-const data = [
-	{ x: 1, y: 10, size: 25 },
-	{ x: 1.7, y: 12, size: 10 },
-	{ x: 2, y: 5, size: 1 },
-	{ x: 3, y: 15, size: 12 },
-	{ x: 2.5, y: 7, size: 4 }
-]
+import formatData from '../utils/FormatDataToGraph'
 
 const Graph = () => {
+	const [data, setData] = useState([])
+	useEffect(() => {
+		let isSubscribed = true
+		async function getData() {
+			const response = await fetch(
+				'http://localhost:5000/reqByStrategy?startMonth=July&loggedIn=false&strategy=631713',
+				{
+					method: 'GET',
+					mode: 'cors'
+				}
+			)
+			const newData = await response.json()
+			const formattedData = formatData(newData)
+			if (isSubscribed) setData([...formattedData])
+
+			return () => (isSubscribed = false)
+		}
+		getData()
+	}, [])
 	return (
-		<XYPlot width={300} height={300}>
-			<VerticalGridLines />
-			<HorizontalGridLines />
-			<XAxis />
-			<YAxis />
-			<MarkSeries
-				className='mark-series-graph'
-				strokeWidth={2}
-				opacity='0.8'
-				sizeRange={[5, 15]}
-				data={data}
-			/>
-		</XYPlot>
+		<React.Fragment>
+			{data.length !== 0 ? (
+				<XYPlot width={600} height={600}>
+					<VerticalGridLines />
+					<HorizontalGridLines />
+					<XAxis />
+					<YAxis />
+					<MarkSeries
+						className='mark-series-graph'
+						strokeWidth={2}
+						opacity='0.8'
+						sizeRange={[0, 40]}
+						data={data}
+					/>
+				</XYPlot>
+			) : null}
+		</React.Fragment>
 	)
 }
 

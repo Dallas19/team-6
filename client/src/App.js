@@ -10,15 +10,18 @@ function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false)
 
 	useEffect(() => {
+		let isSubscribed = true
 		async function getIfLoggedIn() {
 			const response = await fetch('http://localhost:5000/login', {
 				method: 'GET',
 				mode: 'cors'
 			})
 			const loggedInObj = await response.json()
-			setIsLoggedIn(loggedInObj['isLoggedIn'])
+			if (isSubscribed) setIsLoggedIn(loggedInObj['isLoggedIn'])
 		}
 		getIfLoggedIn()
+
+		return () => (isSubscribed = false)
 	}, [])
 
 	return (

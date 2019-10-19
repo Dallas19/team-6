@@ -57,7 +57,7 @@ app.get('/readFile', async (req, res) => {
 	res.json(completeUnitedWayRows)
 })
 
-app.get('/reqPoints', async (req, res) => {
+app.get('/reqByStrategyIndicator', async (req, res) => {
 	const { startMonth, loggedIn, strategy, indicator } = req.query
 	const [month1, month2, month3] = getThreeMonths(startMonth)
 	let dataPoints
@@ -70,6 +70,82 @@ app.get('/reqPoints', async (req, res) => {
 						{ Strategy_ID: parseInt(strategy) },
 						{ Outcome_Indicator_ID: parseInt(indicator) }
 					]
+				},
+				{
+					_id: 0,
+					['Unique Count ' + month1 + ' 2019']: 1,
+					['Unique Count ' + month2 + ' 2019']: 1,
+					['Unique Count ' + month3 + ' 2019']: 1,
+					Program_Name: 1,
+					Agency_Name: 1,
+					'Annual Target 2019 (if applicable)': 1
+				}
+			)
+			.exec()
+		// remove certain keys for external viewers : fix
+		if (loggedIn !== 'true') {
+			dataPoints = dataPoints.map(dataPoint => {
+				let obj = { ...dataPoint['_doc'] }
+				delete obj.Program_Name
+				delete obj.Agency_Name
+
+				return obj
+			})
+		}
+	} catch (err) {
+		console.log('Error: ', err)
+	}
+	res.json(dataPoints)
+})
+
+app.get('/reqByStrategy', async (req, res) => {
+	const { startMonth, loggedIn, strategy } = req.query
+	const [month1, month2, month3] = getThreeMonths(startMonth)
+	let dataPoints
+	try {
+		// add the filter
+		dataPoints = await performance
+			.find(
+				{
+					Strategy_ID: parseInt(strategy)
+				},
+				{
+					_id: 0,
+					['Unique Count ' + month1 + ' 2019']: 1,
+					['Unique Count ' + month2 + ' 2019']: 1,
+					['Unique Count ' + month3 + ' 2019']: 1,
+					Program_Name: 1,
+					Agency_Name: 1,
+					'Annual Target 2019 (if applicable)': 1
+				}
+			)
+			.exec()
+		// remove certain keys for external viewers : fix
+		if (loggedIn !== 'true') {
+			dataPoints = dataPoints.map(dataPoint => {
+				let obj = { ...dataPoint['_doc'] }
+				delete obj.Program_Name
+				delete obj.Agency_Name
+
+				return obj
+			})
+		}
+	} catch (err) {
+		console.log('Error: ', err)
+	}
+	res.json(dataPoints)
+})
+
+app.get('/reqByIndicator', async (req, res) => {
+	const { startMonth, loggedIn, indicator } = req.query
+	const [month1, month2, month3] = getThreeMonths(startMonth)
+	let dataPoints
+	try {
+		// add the filter
+		dataPoints = await performance
+			.find(
+				{
+					Outcome_Indicator_ID: parseInt(indicator)
 				},
 				{
 					_id: 0,
