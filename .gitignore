@@ -102,3 +102,6 @@ public
 
 # For csv
 *.csv
+
+# DB config
+config.js
