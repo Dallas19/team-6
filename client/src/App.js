@@ -1,95 +1,51 @@
-import React from 'react'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
+import React, { useState, useEffect } from 'react'
+import { Container, Grid, Card, CardContent } from '@material-ui/core'
+import RoleContext from '../src/Context'
+import Header from './components/Header'
+import Filter from './components/Filter'
+import Graph from './components/Graph'
 
-// components
-import Chart from './components/Chart'
+function App() {
+	const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-const months = {
-	January: ['January', 'February', 'March'],
-	February: ['February', 'March', 'April'],
-	March: ['March', 'April', 'May'],
-	April: ['April', 'May', 'June'],
-	May: ['May', 'June', 'July'],
-	June: ['June', 'July', 'August'],
-	July: ['July', 'August', 'September'],
-	August: ['August', 'September', 'October'],
-	September: ['September', 'October', 'November'],
-	October: ['October', 'November', 'December'],
-	November: ['November', 'December', 'January'],
-	December: ['December', 'January', 'February']
-}
+	useEffect(() => {
+		async function getIfLoggedIn() {
+			const response = await fetch('http://localhost:5000/login', {
+				method: 'GET',
+				mode: 'cors'
+			})
+			const loggedInObj = await response.json()
+			setIsLoggedIn(loggedInObj['isLoggedIn'])
+		}
+		getIfLoggedIn()
+	}, [])
 
-const endpoint = ''
-class App extends React.Component {
-	datas
-	startMonth
-	
-	strategy
-	indicator
-	programNames
-	partnerNames
-
-    constructor(props) {
-        super(props)
-        this.state = {
-            loggedIn: false
-        }
-        this.toggleLog = this.toggleLog.bind(this);
-    }
-	getThreeMonths(startMonth) {
-		return months[startMonth]
-	}
-	updateData() {}
-
-	toggleLog(event) {
-		this.setState({ loggedIn: !this.state.loggedIn })
-	}
-
-	render() {
-		let checkbox = (
-			<div>
-			  <label>Logged in</label>
-			  <input
-				type='checkbox'
-				onClick={this.toggleLog} />
-			</div>
-		);
-		let charts = [];
-        if (this.datas){
-		    for (let i = 0; i < this.datas.length; ++i) {
-			    charts.push(
-				    <Chart data={this.datas[i]}
-				           program={this.programNames[i]}
-				           partner={this.partnerName[i]}
-				           target={this.targets[i]} />
-			    );
-		    }}
-        let msg = (this.state.loggedIn)? "yes" : "no";
-
-		return (
-			<div>
-			  <div>
-				<AppBar position='static'>
-				  <Toolbar>
-					<Typography variant='title' color='inherit'>
-					  Data Visualization Tool for United Way
-					  of San Antonio
-					</Typography>
-                    <div className="checkbox">
-			          {checkbox}
-                    </div>
-				  </Toolbar>
-				</AppBar>
-			  </div>
-			  <br />
-			  <br />
-			  {charts}
-              Logged In: {msg}
-			</div>
-		)
-	}
+	return (
+		<div>
+			<RoleContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+				<div>
+					<Header />
+				</div>
+				<div className='appBody' style={{ paddingTop: '10px' }}>
+					<Container maxWidth='lg'>
+						<Card>
+							<CardContent>
+								<Grid
+									container
+									direction='row'
+									justify='space-around'
+									alignItems='center'
+								>
+									<Filter />
+									<Graph />
+								</Grid>
+							</CardContent>
+						</Card>
+					</Container>
+				</div>
+			</RoleContext.Provider>
+		</div>
+	)
 }
 
 export default App
