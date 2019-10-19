@@ -6,9 +6,17 @@ import Filter from './components/Filter'
 import Graph from './components/Graph'
 import ToggleLogin from './components/ToggleLogin'
 
+import formatData from './utils/FormatDataToGraph'
+
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false)
 	const [path, setPath] = useState('reqByStrategy')
+	const [data, setData] = useState([])
+	const [filterOption, setFilterOption] = useState({
+		strategy: 632711,
+		indicator: 933977
+	})
+	const [triggerRefresh, setTriggerRefresh] = useState(false)
 
 	useEffect(() => {
 		let isSubscribed = true
@@ -24,6 +32,36 @@ function App() {
 
 		return () => (isSubscribed = false)
 	}, [])
+
+	useEffect(() => {
+		let isSubscribed = true
+		async function getData() {
+			let apiURL =
+				'http://localhost:5000/' +
+				path +
+				'?startMonth=July&loggedIn=' +
+				isLoggedIn
+			apiURL +=
+				filterOption.strategy !== 0
+					? '&strategy=' + filterOption.strategy
+					: ''
+			apiURL +=
+				filterOption.indicator !== 0
+					? '&indicator=' + filterOption.indicator
+					: ''
+			const response = await fetch(apiURL, {
+				method: 'GET',
+				mode: 'cors'
+			})
+			const newData = await response.json()
+			const formattedData = formatData(newData)
+			console.log(newData)
+			if (isSubscribed) setData([...formattedData])
+
+			return () => (isSubscribed = false)
+		}
+		getData()
+	}, [triggerRefresh])
 
 	return (
 		<div>
@@ -43,8 +81,21 @@ function App() {
 									justify='space-around'
 									alignItems='center'
 								>
-									<Filter />
-									<Graph />
+									<Filter
+										filterOption={filterOption}
+										setFilterOption={
+											setFilterOption
+										}
+										triggerRefresh={
+											triggerRefresh
+										}
+										setTriggerRefresh={
+											setTriggerRefresh
+										}
+									/>
+									{data.length !== 0 ? (
+										<Graph data={data} />
+									) : null}
 									<ToggleLogin />
 								</Grid>
 							</CardContent>

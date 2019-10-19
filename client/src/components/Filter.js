@@ -20,14 +20,15 @@ const useStyles = makeStyles({
 })
 
 // Will input the desired Strategy ID and Indicator ID
-const Filter = () => {
+const Filter = props => {
 	const classes = useStyles()
 	const [isOpen, setIsOpen] = useState(false)
-	const [filterOption, setFilterOption] = useState({
-		strategy: 632711,
-		indicator: 933977
-	})
-
+	const {
+		filterOption,
+		setFilterOption,
+		triggerRefresh,
+		setTriggerRefresh
+	} = props
 	const handleFilterChange = e => {
 		let obj = { ...filterOption }
 		obj[e.target.id] = e.target.value
@@ -57,6 +58,7 @@ const Filter = () => {
 				'&indicator=' +
 				filterOption.indicator
 		}
+		setTriggerRefresh(!triggerRefresh)
 	}
 
 	const sideList = () => (
