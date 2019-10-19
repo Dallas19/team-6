@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { Typography } from '@material-ui/core'
 import {
 	XYPlot,
 	VerticalGridLines,
@@ -7,15 +8,19 @@ import {
 	YAxis,
 	MarkSeries
 } from 'react-vis'
+import RoleContext from '../Context'
 import formatData from '../utils/FormatDataToGraph'
 
 const Graph = () => {
 	const [data, setData] = useState([])
+	const { path } = useContext(RoleContext)
 	useEffect(() => {
 		let isSubscribed = true
 		async function getData() {
 			const response = await fetch(
-				'http://localhost:5000/reqByStrategy?startMonth=July&loggedIn=false&strategy=631713',
+				'http://localhost:5000/' +
+					path +
+					'?startMonth=July&loggedIn=false&strategy=632711',
 				{
 					method: 'GET',
 					mode: 'cors'
@@ -31,8 +36,11 @@ const Graph = () => {
 	}, [])
 	return (
 		<React.Fragment>
+			<Typography variant='h6'>
+				Unique Counts vs 3 Months Data (By Strategy)
+			</Typography>
 			{data.length !== 0 ? (
-				<XYPlot width={600} height={600}>
+				<XYPlot width={300} height={300}>
 					<VerticalGridLines />
 					<HorizontalGridLines />
 					<XAxis />
@@ -43,6 +51,7 @@ const Graph = () => {
 						opacity='0.8'
 						sizeRange={[0, 40]}
 						data={data}
+						size={2}
 					/>
 				</XYPlot>
 			) : null}

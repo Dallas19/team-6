@@ -24,8 +24,8 @@ const Filter = () => {
 	const classes = useStyles()
 	const [isOpen, setIsOpen] = useState(false)
 	const [filterOption, setFilterOption] = useState({
-		strategy: 0,
-		indicator: 0
+		strategy: 632711,
+		indicator: 933977
 	})
 
 	const handleFilterChange = e => {
@@ -35,7 +35,28 @@ const Filter = () => {
 	}
 
 	const handleSubmit = () => {
-		// TODO: make req to end point here
+		let endpoint
+		if (filterOption.strategy === 0 && filterOption.indicator !== 0) {
+			endpoint =
+				'http://localhost:5000/reqByStrategy?startMonth=July&loggedIn=false&indicator=' +
+				filterOption.indicator
+		} else if (
+			filterOption.strategy !== 0 &&
+			filterOption.indicator === 0
+		) {
+			endpoint =
+				'http://localhost:5000/reqByStrategy?startMonth=July&loggedIn=false&strategy=' +
+				filterOption.strategy
+		} else if (
+			filterOption.strategy !== 0 &&
+			filterOption.indicator !== 0
+		) {
+			endpoint =
+				'http://localhost:5000/reqByStrategy?startMonth=July&loggedIn=false&strategy=' +
+				filterOption.strategy +
+				'&indicator=' +
+				filterOption.indicator
+		}
 	}
 
 	const sideList = () => (
@@ -65,7 +86,7 @@ const Filter = () => {
 				variant='outlined'
 			/>
 			<Button variant='contained' onClick={handleSubmit}>
-				Send
+				Apply
 			</Button>
 		</div>
 	)

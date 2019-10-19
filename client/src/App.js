@@ -8,6 +8,7 @@ import ToggleLogin from './components/ToggleLogin'
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false)
+	const [path, setPath] = useState('reqByStrategy')
 
 	useEffect(() => {
 		let isSubscribed = true
@@ -26,7 +27,9 @@ function App() {
 
 	return (
 		<div>
-			<RoleContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+			<RoleContext.Provider
+				value={{ isLoggedIn, path, setIsLoggedIn, setPath }}
+			>
 				<div>
 					<Header />
 				</div>
