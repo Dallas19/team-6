@@ -14,8 +14,8 @@ module.exports = {
             sum_yy += Y[i]*Y[i];
             sum_xy += X[i]*Y[i];
         } 
-        out[0] = (Y.length*sum_xy - sum_x*sum_y)/(Y.length * sum_xx - sum_x * sum_x);
-        out[1] = (sum_y - out[0]*sum_x)/Y.length;
+        out["slope"] = (Y.length*sum_xy - sum_x*sum_y)/(Y.length * sum_xx - sum_x * sum_x);
+        out["intercept"] = (sum_y - out[0]*sum_x)/Y.length;
         return out;
     },
     //takes a set of json row block
@@ -36,5 +36,10 @@ module.exports = {
             Y_vals.push(jsonObjArr[i]['Unique Count September 2019']);
         }
         return {X: X_vals, Y: Y_vals};
+    },
+    //Returns the number of months from month 0 remaining until partner
+    //hits desired goal
+    getProjectedGoalTime: function(regressionResults, targetVal){
+        return (target - regressionResults["intercept"])/regressionResults["slope"]
     }
   };
