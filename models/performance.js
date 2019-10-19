@@ -31,3 +31,4 @@ var performanceSchema = {
 }
 
 const Performance = mongoose.model('Performance', performanceSchema, 'performance')
+module.exports = Performance;
