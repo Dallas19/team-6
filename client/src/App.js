@@ -25,62 +25,68 @@ const endpoint = ''
 class App extends React.Component {
 	datas
 	startMonth
-	loggedIn
+	
 	strategy
 	indicator
 	programNames
 	partnerNames
 
+    constructor(props) {
+        super(props)
+        this.state = {
+            loggedIn: false
+        }
+        this.toggleLog = this.toggleLog.bind(this);
+    }
 	getThreeMonths(startMonth) {
 		return months[startMonth]
 	}
 	updateData() {}
 
-	toggleLog() {
-		this.setState({ loggedIn: !this.loggedIn })
+	toggleLog(event) {
+		this.setState({ loggedIn: !this.state.loggedIn })
 	}
 
 	render() {
-		const checkbox = (
+		let checkbox = (
 			<div>
-				<input
-					type='checkbox'
-					onClick={this.toggleLog.bind(this)}
-				/>
-				<label>Checkbox</label>
+			  <label>Logged in</label>
+			  <input
+				type='checkbox'
+				onClick={this.toggleLog} />
 			</div>
-		)
-		const charts = () => {
-			let charts = []
-			for (let i = 0; i < this.datas.length; ++i) {
-				charts.push(
-					<Chart
-						data={this.datas[i]}
-						program={this.programNames[i]}
-						partner={this.partnerName[i]}
-						target={this.targets[i]}
-					/>
-				)
-			}
-			return charts
-		}
+		);
+		let charts = [];
+        if (this.datas){
+		    for (let i = 0; i < this.datas.length; ++i) {
+			    charts.push(
+				    <Chart data={this.datas[i]}
+				           program={this.programNames[i]}
+				           partner={this.partnerName[i]}
+				           target={this.targets[i]} />
+			    );
+		    }}
+        let msg = (this.state.loggedIn)? "yes" : "no";
 
 		return (
 			<div>
-				<div>
-					<AppBar position='static'>
-						<Toolbar>
-							<Typography variant='title' color='inherit'>
-								Data Visualization Tool for United Way
-								of San Antonio
-							</Typography>
-							{checkbox}
-						</Toolbar>
-					</AppBar>
-				</div>
-				<br />
-				<br />
-				{charts}
+			  <div>
+				<AppBar position='static'>
+				  <Toolbar>
+					<Typography variant='title' color='inherit'>
+					  Data Visualization Tool for United Way
+					  of San Antonio
+					</Typography>
+                    <div className="checkbox">
+			          {checkbox}
+                    </div>
+				  </Toolbar>
+				</AppBar>
+			  </div>
+			  <br />
+			  <br />
+			  {charts}
+              Logged In: {msg}
 			</div>
 		)
 	}
