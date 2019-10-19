@@ -5,17 +5,17 @@ module.exports = {
         let X = labeledData.X
         let Y = labeledData.Y
         var out = {};
-        let sum_x, sum_y, sum_xy, sum_xx, sum_yy;
-        sum_x = sum_y = sum_xy = sum_xx = sum_yy = 0;
+        let sum_x, sum_y, sum_xy, sum_xsq, sum_ysq;
+        sum_x = sum_y = sum_xy = sum_xsq = sum_ysq = 0;
         for (let i = 0; i < Y.length; ++i){
             sum_x += X[i];
             sum_y += Y[i];
-            sum_xx += X[i]*X[i];
-            sum_yy += Y[i]*Y[i];
+            sum_xsq += X[i]*X[i];
+            sum_ysq += Y[i]*Y[i];
             sum_xy += X[i]*Y[i];
         } 
-        out["slope"] = (Y.length*sum_xy - sum_x*sum_y)/(Y.length * sum_xx - sum_x * sum_x);
-        out["intercept"] = (sum_y - out[0]*sum_x)/Y.length;
+        out["slope"] = (Y.length*sum_xy - sum_x*sum_y)/(Y.length * sum_xsq - sum_x * sum_x);
+        out["intercept"] = (sum_y - out["slope"]*sum_x)/Y.length;
         return out;
     },
     //takes a set of json row block
