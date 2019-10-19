@@ -46,7 +46,7 @@ class Chart extends Component {
           <HorizontalGridLines />
           <XAxis />
           <YAxis />
-          <LineSeries data={data} />
+          <LineSeries data={this.data} />
         </XYPlot>
       </div>
     );
