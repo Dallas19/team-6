@@ -28,47 +28,45 @@ const endpoint = "";
 class App extends React.Component {
     datas;
     startMonth;
-    isLoggedIn;
+    loggedIn;
     strategy;
     indicator;
+    programNames;
+    partnerNames;
     
     getThreeMonths(startMonth) {
         return months[startMonth]
     }
-
-
-
-
     updateData() {
-        axios.get(`${endpoint}?loggedIn=${loggedIn}&strategy=${strategy}&startMonth=${startMonth}&indicator=${indicator}`)
+        axios.get(`${this.endpoint}?loggedIn=${this.loggedIn}&strategy=${this.strategy}&startMonth=${this.startMonth}&indicator=${this.indicator}`)
             .then(res => {
-            
-            let months = this.getThreeMonths(startMonth);
-
-    
-            datas[i] = {
-                months[0]+ "19": res.data[i][months[0]+ "19"],
-                months[1]+ "19": res.data[i][months[1]+ "19"],
-             months[2]+ "19": res.data[i][months[2]+ "19"]
-            }
+                for (let i = 0; i < res.data.length; ++i) {
+    	            
+                    let months = this.getThreeMonths(this.startMonth);
 
 
-            programNames[i] = res.data[i]["Program_name"];
+                    for (let j = 0; j < 3; ++j) {
+                        this.datas[i][months[j]+"19"] = res.data[i][months[j]+"19"];    	            
+                    }
 
-            if (loggedIn)
-            {
-                programNames[i] = res.data[i]["Program_name"];
-                partnerName[i] = res.data[i]["Partner_name"];
-            }
 
-            annualTarget[i] = res.data[i]["AnnualTarget"]
-            
+                    this.programNames[i] = res.data[i]["Program_name"];
+
+                    if (this.loggedIn)
+                    {
+                        this.programNames[i] = res.data[i]["Program_name"];
+                        this.partnerNames[i] = res.data[i]["Partner_name"];
+                    }
+
+                    this.annualTarget[i] = res.data[i]["AnnualTarget"]
+                }
+                
             })
     }
 
 
     toggleLog() {
-        this.setState({loggedIn: !loggedIn})
+        this.setState({loggedIn: !this.loggedIn})
     }
     
     render() {
@@ -81,10 +79,14 @@ class App extends React.Component {
             </div>
         );
         const charts = () => {
-            
-            for (let i = 0; i < datas.length; ++i) {
-                <Chart data={data}/>
+            let charts = [];
+            for (let i = 0; i < this.datas.length; ++i) {
+                charts.push(<Chart data={this.datas[i]}
+                                   program={this.programNames[i]}
+                                   partner={this.partnerName[i]}
+                                   target={this.targets[i]}/>)
     	    }
+            return charts
         }
         
         return (
