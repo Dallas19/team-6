@@ -5,8 +5,27 @@ import {XYPlot, LineSeries, XAxis, YAxis, HorizontalGridLines, VerticalGridLines
 
 
 class Chart extends Component {
+
+  data = [];
+
+  constructor (props) {
+    super(props);
+    let keys = Object.keys(props.data), 
+        values = Object.values(props.data);
+
+
+
+    for (let count =0; count < keys.length; count++)
+    {
+
+        this.data[count].x = keys[count];
+        this.data[count].y = values[count];
+ 
+    }
+
+  }
   render () {
-    const data = [
+    /*const data = [
       {x: "ABC", y: 8},
       {x: "1", y: 5},
       {x: "2", y: 4},
@@ -18,9 +37,13 @@ class Chart extends Component {
       {x: "8", y: 2},
       {x: "9", y: 0},
     ];
+    */
     return (
       <div className="App">
         <XYPlot xType='ordinal' height={300} width={1000}>
+
+        onSeriesMouseOver={(event)=>{
+
           <VerticalGridLines/>
           <HorizontalGridLines />
           <XAxis />
