@@ -4,6 +4,7 @@ import RoleContext from '../src/Context'
 import Header from './components/Header'
 import Filter from './components/Filter'
 import Graph from './components/Graph'
+import ToggleLogin from './components/ToggleLogin'
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -38,6 +39,7 @@ function App() {
 								>
 									<Filter />
 									<Graph />
+									<ToggleLogin />
 								</Grid>
 							</CardContent>
 						</Card>
