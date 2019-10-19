@@ -42,8 +42,6 @@ class Chart extends Component {
       <div className="App">
         <XYPlot xType='ordinal' height={300} width={1000}>
 
-        onSeriesMouseOver={(event)=>{
-
           <VerticalGridLines/>
           <HorizontalGridLines />
           <XAxis />
